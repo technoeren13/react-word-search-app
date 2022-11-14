@@ -1,11 +1,17 @@
-import React from 'react';
+import React, { useState } from 'react';
+import ResponseForm from './components/ResponseForm';
 import SearchInput from './components/SearchInput';
-import './index.style.css';
 
 const App = () => {
+  const [word, setWord] = useState({});
+
+  console.log(Object.keys(word));
+
   return (
     <div className='container'>
-      <SearchInput />
+      <SearchInput searchWord={setWord} />
+
+      {Object.keys(word).length === 0 ? '' : <ResponseForm response={word} />}
     </div>
   );
 };
