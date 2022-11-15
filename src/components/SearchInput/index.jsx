@@ -1,30 +1,23 @@
-import React from 'react';
-import './style.css';
-import axios from 'axios';
+import React, {useEffect, useState} from 'react';
+import classes from './style.module.css';
+import {useDebounce} from 'use-debounce';
 
-const SearchInput = ({ searchWord, setLoading }) => {
-  const searchWordFunc = async (e) => {
-    if (e.key !== 'Enter') return;
+const SearchInput = ({ onChange }) => {
+  const [value, setValue] = useState('')
+  const [debouncedValue] = useDebounce(value, 2000)
 
-    if (e.target.value.length < 1) return searchWord({});
-
-    setLoading(true);
-
-    const response = await axios.get(
-      `https://sozluk.gov.tr/gts?ara=${e.target.value}`
-    );
-
-    setTimeout(() => {
-      setLoading(false);
-    }, 1_000);
-
-    return searchWord(response.data);
-  };
+  useEffect(() => onChange(debouncedValue), [debouncedValue])
 
   return (
-    <div className='search-input'>
-      <h1>TDK Word Search</h1>
-      <input type='text' onKeyUp={searchWordFunc} placeholder='Search Word' />
+    <div className={classes.searchInput}>
+      <h1 className={classes.text}>TDK Word Search</h1>
+      <input
+        className={classes.searchInputInput}
+        type='text'
+        value={value}
+        onChange={(event) => setValue(event.target.value)}
+        placeholder='Search Word'
+      />
     </div>
   );
 };

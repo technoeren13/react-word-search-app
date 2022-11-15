@@ -1,20 +1,36 @@
-import React, { useState } from 'react';
+import React, {useEffect, useState} from 'react';
 import ResponseForm from './components/ResponseForm';
 import SearchInput from './components/SearchInput';
 
 const App = () => {
-  const [word, setWord] = useState({});
+  const [searchPhrase, setSearchPhrase] = useState()
+  const [searchResult, setSearchResult] = useState();
   const [loading, setLoading] = useState(false);
 
-  return (
-    <div className='container'>
-      <SearchInput searchWord={setWord} setLoading={setLoading} />
+  useEffect(() => {
+    if (loading) return
 
-      {Object.keys(word).length === 0 ? (
-        ''
-      ) : (
-        <ResponseForm loading={loading} response={word} />
-      )}
+    setLoading(true)
+    fetch(`https://sozluk.gov.tr/gts?ara=${searchPhrase}`)
+      .then((response) => response.json())
+      .then((data) => {
+        if (Array.isArray(data)) {
+          setSearchResult(data[0])
+        } else {
+          setSearchResult(data)
+        }
+      })
+      .finally(() => setLoading(false))
+  }, [searchPhrase])
+
+  return (
+    <div>
+      <SearchInput onChange={(newPhrase) => setSearchPhrase(newPhrase)} />
+      {
+        searchResult ? (
+          <ResponseForm loading={loading} searchResult={searchResult} />
+        ) : null
+      }
     </div>
   );
 };

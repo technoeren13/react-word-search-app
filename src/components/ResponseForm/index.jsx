@@ -1,13 +1,13 @@
 import React from 'react';
-import ReactLoading from 'react-loading';
-import './style.css';
+import classes from './style.module.css';
 import { FaAngleRight } from 'react-icons/fa';
+import ReactLoading from "react-loading";
 
-const ResponseForm = ({ loading, response }) => {
-  return (
-    <div className='form'>
-      {loading ? (
-        <div className='loading'>
+const ResponseForm = ({ searchResult, loading }) => (
+  <div className={classes.form}>
+    {
+      loading ? (
+        <div className={classes.loading}>
           <ReactLoading
             type={'balls'}
             color={'#03fc4e'}
@@ -16,24 +16,22 @@ const ResponseForm = ({ loading, response }) => {
           />
         </div>
       ) : (
-        <div className='response-form'>
-          {response.error ? (
-            <h3>❌ {response.error}</h3>
-          ) : (
-            <div className='word-info'>
-              <div className='word-info-title'>
-                <FaAngleRight /> <h2>{response[0].madde.toUpperCase()}</h2>
-              </div>
-              <hr />
-              {response[0].anlamlarListe.map((value) => {
-                return <li>{value.anlam}</li>;
-              })}
+        searchResult.error ? (
+          <h3 className={classes.error}>❌ {searchResult.error}</h3>
+        ) : (
+          <div className={classes.wordInfo}>
+            <div className={classes.wordInfoTitle}>
+              <FaAngleRight /> <h2>{searchResult.madde.toUpperCase()}</h2>
             </div>
-          )}
-        </div>
-      )}
-    </div>
-  );
-};
+            <hr />
+            {searchResult.anlamlarListe.map((value) => {
+              return <li>{value.anlam}</li>;
+            })}
+          </div>
+        )
+      )
+    }
+  </div>
+);
 
 export default ResponseForm;
